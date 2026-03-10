@@ -3,50 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>王櫻錡 | 個人網站</title>
-    <link rel="stylesheet" href="style.css">
+    <title>114 Web Labs - 我的練習作品集</title>
+    <style>
+        /* 基本重置與字體 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', "PingFang TC", "Microsoft JhengHei", sans-serif;
+        }
+
+        body {
+            background-color: #0f172a; /* 深藍黑色背景 */
+            color: #f8fafc;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Canvas 背景樣式 */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        }
+
+        /* 內容容器 */
+        .container {
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            z-index: 1;
+            padding: 40px 20px;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px); /* 玻璃擬態效果 */
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 標題與名字 */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .author-name {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .author-name::before, .author-name::after {
+            content: "";
+            height: 1px;
+            width: 20px;
+            background-color: #475569;
+        }
+
+        /* 導覽連結清單 */
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 18px 24px;
+            border-radius: 16px;
+            color: #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.02);
+            border-color: #38bdf8;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+        }
+
+        .nav-item h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .nav-item .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item:hover .arrow {
+            transform: translateX(5px);
+            color: #38bdf8;
+        }
+
+        /* 底部裝飾 */
+        footer {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+    </style>
 </head>
 <body>
 
-    <header>
-        <h1>王櫻錡</h1>
-        <p class="subtitle">個人介紹網站</p>
-    </header>
+    <!-- 背景動畫元件 -->
+    <canvas id="bgCanvas"></canvas>
 
-    <nav>
-        <ul>
-            <li><a href="#about">關於我</a></li>
-            <li><a href="#skills">技能</a></li>
-            <li><a href="#contact">聯絡方式</a></li>
-        </ul>
-    </nav>
+    <div class="container">
+        <header>
+            <h1>114 Web Labs</h1>
+            <div class="author-name">由 [你的名字] 設計製作</div>
+        </header>
 
-    <section id="about">
-        <h2>關於我</h2>
-        <p>
-            你好，我是王櫻錡。這是我的個人網站。
-            我對設計、科技與創新充滿熱情。
-        </p>
-    </section>
+        <nav class="nav-list">
+            <a href="lab1/index.html" class="nav-item">
+                <h3>Lab 01: 基礎網頁入門</h3>
+                <span class="arrow">→</span>
+            </a>
+            <a href="lab2/index.html" class="nav-item">
+                <h3>Lab 02: CSS 藝術與排版</h3>
+                <span class="arrow">→</span>
+            </a>
+            <a href="lab3/index.html" class="nav-item">
+                <h3>Lab 03: JavaScript 互動</h3>
+                <span class="arrow">→</span>
+            </a>
+        </nav>
 
-    <section id="skills">
-        <h2>技能</h2>
-        <ul class="skill-list">
-            <li>HTML</li>
-            <li>CSS</li>
-            <li>JavaScript</li>
-            <li>UI/UX 設計</li>
-        </ul>
-    </section>
+        <footer>
+            &copy; 2024 114 Web Dev Course
+        </footer>
+    </div>
 
-    <section id="contact">
-        <h2>聯絡方式</h2>
-        <p>Email：your@email.com</p>
-    </section>
+    <script>
+        // Canvas 動畫邏輯
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
 
-    <footer>
-        <p>© 2026 王櫻錡 All Rights Reserved.</p>
-    </footer>
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 1,
+                    speedX: (Math.random() - 0.5) * 0.5,
+                    speedY: (Math.random() - 0.5) * 0.5,
+                    opacity: Math.random() * 0.5 + 0.1
+                });
+            }
+        }
 
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(56, 189, 248, ${p.opacity})`;
+                ctx.fill();
+
+                // 更新位置
+                p.x += p.speedX;
+                p.y += p.speedY;
+
+                // 邊界檢查
+                if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+            });
+
+            // 畫線連接
+            connectParticles();
+            requestAnimationFrame(draw);
+        }
+
+        function connectParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 150) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${0.1 * (1 - distance/150)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('resize', init);
+        
+        init();
+        draw();
+    </script>
 </body>
 </html>

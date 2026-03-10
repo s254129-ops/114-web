@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>時尚隨機抽籤轉盤</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            max-width: 900px;
+            width: 95%;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+            }
+        }
+
+        /* 左側控制區 */
+        .controls {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 280px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            border-color: var(--primary-color);
+        }
+
+        .spin-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);
+        }
+
+        .spin-btn:hover {
+            background-color: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        .spin-btn:active {
+            transform: translateY(0);
+        }
+
+        .spin-btn:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* 右側轉盤區 */
+        .wheel-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* 指針 */
+        .pointer {
+            position: absolute;
+            top: 50%;
+            right: -10px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-right: 30px solid #ef4444; /* 紅色指針 */
+            z-index: 10;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+        }
+
+        .result-display {
+            margin-top: 20px;
+            height: 40px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- 左側：輸入名單 -->
+        <div class="controls">
+            <h2>名單設定</h2>
+            <textarea id="nameList" placeholder="輸入名單（每行一個）">小明
+小華
+小美
+阿強
+阿珍
+小白
+小黑</textarea>
+            <button class="spin-btn" id="spinBtn" onclick="startSpin()">立即抽獎</button>
+            <div id="result" class="result-display">準備好抽獎了嗎？</div>
+        </div>
+
+        <!-- 右側：轉盤畫布 -->
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <canvas id="wheelCanvas" width="400" height="400"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const nameInput = document.getElementById('nameList');
+        const resultDisplay = document.getElementById('result');
+        const spinBtn = document.getElementById('spinBtn');
+
+        let names = [];
+        let currentAngle = 0; // 當前旋轉角度
+        let isSpinning = false;
+        
+        // 時尚配色清單
+        const colors = [
+            '#fecaca', '#fed7aa', '#fef08a', '#bbf7d0', 
+            '#99f6e4', '#bfdbfe', '#ddd6fe', '#f5d0fe'
+        ];
+
+        // 初始化與事件監聽
+        function init() {
+            updateNames();
+            nameInput.addEventListener('input', () => {
+                if (!isSpinning) {
+                    updateNames();
+                    drawWheel();
+                }
+            });
+            drawWheel();
+        }
+
+        function updateNames() {
+            names = nameInput.value.split('\n')
+                .map(n => n.trim())
+                .filter(n => n !== "");
+        }
+
+        function drawWheel() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = canvas.width / 2 - 10;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (names.length === 0) {
+                // 空狀態
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = '#f1f5f9';
+                ctx.fill();
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.stroke();
+                return;
+            }
+
+            const arcSize = (2 * Math.PI) / names.length;
+
+            names.forEach((name, i) => {
+                const angle = currentAngle + i * arcSize;
+                
+                // 畫扇形
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, angle, angle + arcSize);
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // 畫文字
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(angle + arcSize / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#334155";
+                ctx.font = "bold 16px sans-serif";
+                ctx.fillText(name, radius - 20, 10);
+                ctx.restore();
+            });
+
+            // 畫中心圓
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 15, 0, 2 * Math.PI);
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = "rgba(0,0,0,0.2)";
+            ctx.stroke();
+        }
+
+        function startSpin() {
+            if (isSpinning || names.length === 0) return;
+
+            isSpinning = true;
+            spinBtn.disabled = true;
+            resultDisplay.innerText = "旋轉中...";
+
+            // 隨機旋轉力度 (隨機增加 10~20 圈再停下)
+            let rotationSpeed = 0.2 + Math.random() * 0.2; // 初始速度
+            const friction = 0.985; // 摩擦力，數字越大轉越久
+            
+            function animate() {
+                currentAngle += rotationSpeed;
+                rotationSpeed *= friction; // 模擬減速
+
+                drawWheel();
+
+                if (rotationSpeed > 0.002) {
+                    requestAnimationFrame(animate);
+                } else {
+                    stopSpin();
+                }
+            }
+            animate();
+        }
+
+        function stopSpin() {
+            isSpinning = false;
+            spinBtn.disabled = false;
+
+            // 計算指針指向的名字 (指針在右側，即 0 或 2PI 位置)
+            // 因為 canvas 座標系統中 0 是右邊，所以我們看當前角度在對準誰
+            const arcSize = (2 * Math.PI) / names.length;
+            
+            // 歸一化角度到 0 ~ 2PI 之間
+            let normalizedAngle = currentAngle % (2 * Math.PI);
+            // 修正：指針在 0 度位置，我們需要計算哪個扇形包含 0 度
+            // 扇形 i 的範圍是 [currentAngle + i*arc, currentAngle + (i+1)*arc]
+            // 反推：(0 - currentAngle) / arcSize
+            let winningIndex = Math.floor((2 * Math.PI - normalizedAngle) / arcSize) % names.length;
+            
+            if (winningIndex < 0) winningIndex += names.length;
+
+            const winner = names[winningIndex];
+            resultDisplay.innerText = `恭喜中獎：${winner} 🎉`;
+        }
+
+        // 啟動程式
+        init();
+    </script>
+</body>
+</html>
