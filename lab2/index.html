@@ -1,36 +1,110 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8"> <!-- 設定網頁編碼，避免中文亂碼 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 讓手機也能正常顯示 -->
-    <title>關於我自己</title> <!-- 瀏覽器分頁上顯示的標題 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>關於王櫻錡</title>
+    <style>
+        /* 基礎設定 */
+        body {
+            background-color: #fff5f7; /* 極淺粉色背景 */
+            color: #5a5a5a; /* 深灰色字體，比純黑更柔和 */
+            font-family: "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* 卡片容器 */
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 30px; /* 圓角效果 */
+            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2); /* 淡淡的粉紅陰影 */
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        /* 標題樣式 */
+        h1 {
+            color: #ff8fa3; /* 甜美粉紅色 */
+            font-size: 2rem;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+
+        h2 {
+            color: #ffb3c1;
+            font-size: 1.1rem;
+            font-weight: normal;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        /* 段落與文字 */
+        p {
+            font-size: 1rem;
+            margin: 15px 0;
+        }
+
+        /* 裝飾線 */
+        hr {
+            border: none;
+            border-top: 1px solid #ffe5ec;
+            margin: 25px 0;
+        }
+
+        /* 聯絡資訊樣式 */
+        .contact {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        /* 按鈕樣式 (取代原本的超連結) */
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 25px;
+            background-color: #ff8fa3;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background-color: #ff758f;
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
-    <!-- 主標題：我的名字 -->
-    <h1>我叫王櫻錡
-    
-    </h1>
 
-    <!-- 副標題：我的專長 -->
-    <h2>我的專長：跳舞</h2>
+    <div class="container">
+        <h1>王櫻錡</h1>
 
-    <!-- 自我介紹段落 -->
-    <p>
-        我是一個活潑開朗的女生，喜歡用舞蹈發現肢體語言，也喜歡用拍攝記錄生活。
-    </p>
+        <h2>Dancer & Life Lover</h2>
 
-    <!-- 分隔線 -->
-    <hr>
+        <p>
+            我是一個活潑開朗的女生，<br>
+            喜歡用舞蹈發現肢體語言，<br>
+            也喜歡用拍攝記錄生活。
+        </p>
 
-    <!-- 聯絡資訊 -->
-    <p>
-        Email: s254129@elvs.chc.edu.com<br>
-        電話: 0912-345-678
-    </p>
+        <hr>
 
-    <hr>
+        <div class="contact">
+            Email: s254129@elvs.chc.edu.com<br>
+            Phone: 0912-345-678
+        </div>
 
-    <!-- 回首頁 -->
-    <a href="index.html">回到首頁</a>
+        <a href="index.html" class="btn">回到首頁</a>
+    </div>
+
 </body>
 </html>
