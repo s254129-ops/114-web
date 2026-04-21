@@ -1,0 +1,67 @@
+h1 {
+    color: #e962b5;
+  }
+
+  body {
+    /* 使用 linear-gradient 達成漸層效果 */
+    background: linear-gradient(to bottom, #ADD8E6, #00008B);
+    
+    /* 為了確保漸層填滿整個視窗，建議加上這兩行 */
+    min-height: 100vh;
+    margin: 0;
+    text-align: center;
+  padding: 35px;
+  color: hsl(295, 89%, 66%);
+}
+  
+  h2 {
+    font-size: 35px;
+    color: #da7d7d;
+    text-align: center;
+  }
+
+  table {
+    margin: 35px auto;
+    border-collapse: collapse;
+  }
+  ul {
+    display: inline-block;
+    text-align: left;
+  }
+  
+  th,
+  td {
+    border: 1px solid #e43131;
+    padding: 10px 15px;
+  }
+  
+  th {
+    background-color: #f1aa4c;
+    color: rgb(255, 255, 255);
+  }
+  table {
+    margin: 20px auto;
+    border-collapse: collapse;
+  }
+  
+  th,
+  td {
+    border: 1px solid #c72b2b;
+    padding: 10px 15px;
+  }
+  
+  th {
+    background-color: #3498db;
+    color: rgb(176, 200, 252);
+  }
+  #my-table {
+    background-color: rgb(223, 89, 89);
+  }
+  
+  .row1 {
+    background-color: #df5dc360;
+  }
+  
+  .row2 {
+    background-color: #aaf0e4;
+  }
